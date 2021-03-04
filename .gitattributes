@@ -1,0 +1,5 @@
+*.java linguist-language=java
+
+*.java linguist-language=android
+
+*.c linguist-language=c
