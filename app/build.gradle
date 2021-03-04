@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+//apply tinker插件
+//apply plugin: 'com.tencent.tinker.patch'
+apply from: 'tinkerpatch.gradle' //引用tinkerpatch.gradle文件
+
+android {
+    compileSdkVersion 28
+//    buildToolsVersion "30.0.2"
+    defaultConfig {
+        applicationId "com.tinker.test"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "MESSAGE", "\"I am the patch apk\""
+        buildConfigField "String", "TINKER_ID", "\"${tinkerID}\""
+//        buildConfigField "String", "TINKER_ID", "\"1.0\""
+        buildConfigField "String", "PLATFORM", "\"all\""
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
+        abortOnError false
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar', '*.so'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.2'   //应用中的Dex 文件方法数超过了最大值65536的上限
+    implementation 'com.android.support:appcompat-v7:28.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    api("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
+    annotationProcessor("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
+    compileOnly("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
+    api 'pub.devrel:easypermissions:2.0.1'
+
+    implementation files('libs/jarTest.jar') //jar包修复、添加jar包
+//    implementation(name: 'xxx', ext: 'aar')// aar 修复
+}

@@ -1,0 +1,17 @@
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES:= ./JNITest.c
+
+LOCAL_LDLIBS := -llog
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_MODULE:= jnitest
+
+LOCAL_CFLAGS:=-DANDROID
+
+LOCAL_C_INCLUDES:= \
+	$(LOCAL_PATH)/include/
+
+include $(BUILD_SHARED_LIBRARY)
